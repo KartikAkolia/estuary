@@ -1,0 +1,26 @@
+{
+  "name": "estuary",
+  "version": "0.1.0",
+  "description": "Astro e-reader for pre-course study material, University of Greenwich P12069 BSc (Hons) Computer Science, Year 0 (Nord Terminal theme, forked from fjord).",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "deploy": "astro build && wrangler deploy"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "astro": "^7.2.9"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/node": "^26.4.0",
+    "typescript": "^6.0.3"
+  }
+}

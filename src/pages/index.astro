@@ -1,0 +1,43 @@
+---
+import { getCollection } from "astro:content";
+import CourseShell from "../components/CourseShell.astro";
+import { TERM_GROUPS, sortModules } from "../lib/terms";
+
+const allModules = sortModules(await getCollection("modules"));
+---
+
+<CourseShell pageTitle="Course Overview">
+  <h1>P12069 — BSc (Hons) Computer Science</h1>
+  <p>
+    Sandwich mode, 3 years, <strong>Year 0</strong>. Starts <strong>14 September 2026</strong>.
+    Pre-course study material for all seven Year 0 modules, grouped by term below — read each
+    module's chapter for an overview, learning outcomes, key topics, terminology, prerequisites,
+    and recommended prep resources.
+  </p>
+
+  {
+    TERM_GROUPS.map((group) => {
+      const inGroup = allModules.filter((m) => m.data.termGroup === group.key);
+      if (inGroup.length === 0) return null;
+      const groupCredits = inGroup.reduce((sum, m) => sum + m.data.credits, 0);
+      return (
+        <Fragment>
+          <h2>
+            {group.label} — {groupCredits} credits
+          </h2>
+          {inGroup.map((m) => (
+            <a class="module-card" href={`/modules/${m.data.code}/`}>
+              <span class="code">{m.data.code}</span>
+              <div class="title">{m.data.title}</div>
+              <span class="meta">{m.data.credits} credits</span>
+            </a>
+          ))}
+        </Fragment>
+      );
+    })
+  }
+
+  <Fragment slot="footer">
+    <span>estuary — pre-course study reader</span>
+  </Fragment>
+</CourseShell>

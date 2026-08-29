@@ -1,0 +1,150 @@
+---
+import { getCollection } from "astro:content";
+import CourseShell from "../../components/CourseShell.astro";
+import { sortModules } from "../../lib/terms";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("modules");
+  return entries.map((entry) => ({
+    params: { code: entry.data.code },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+
+const ordered = sortModules(await getCollection("modules"));
+const idx = ordered.findIndex((m) => m.data.code === data.code);
+const prev = idx > 0 ? ordered[idx - 1] : null;
+const next = idx < ordered.length - 1 ? ordered[idx + 1] : null;
+---
+
+<CourseShell activeCode={data.code} pageTitle={`${data.code} — ${data.title}`}>
+  <h1>{data.code} — {data.title}</h1>
+  <p class="meta">{data.term} · {data.credits} credits</p>
+
+  <h2>Overview</h2>
+  <p set:html={data.overview} />
+
+  <h2>Learning Outcomes</h2>
+  <ul>
+    {data.learningOutcomes.map((item) => <li set:html={item} />)}
+  </ul>
+
+  <h2>Key Topics</h2>
+  <ul>
+    {data.keyTopics.map((item) => <li set:html={item} />)}
+  </ul>
+
+  <h2>Terminology</h2>
+  <ul>
+    {
+      data.keyTerms.map((kt) => (
+        <li>
+          <strong>{kt.term}</strong> — <span set:html={kt.definition} />
+        </li>
+      ))
+    }
+  </ul>
+
+  <h2>Prerequisites</h2>
+  <ul>
+    {data.prerequisites.map((item) => <li set:html={item} />)}
+  </ul>
+
+  {
+    data.indepth.length > 0 && (
+      <>
+        <h2>In Depth</h2>
+        <p class="indepth-note">
+          Written in plain language for a GCSE Computer Science level of
+          background, paraphrased and synthesized from the sources listed
+          below — not reproduced from them.
+        </p>
+        {data.indepth.map((section) => (
+          <>
+            <h3>{section.heading}</h3>
+            <p set:html={section.body} />
+          </>
+        ))}
+      </>
+    )
+  }
+
+  {
+    data.visuals.length > 0 && (
+      <div class="visuals">
+        {data.visuals.map((v) => (
+          <figure class="visual">
+            <img src={v.src} alt={v.alt} loading="lazy" />
+            <figcaption>{v.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+    )
+  }
+
+  <h2>Recommended Resources</h2>
+  <ul>
+    {
+      data.resources.map((r) => (
+        <li>
+          <a href={r.url} target="_blank" rel="noopener noreferrer">
+            {r.title}
+          </a>
+          {r.note ? <span> — {r.note}</span> : null}
+        </li>
+      ))
+    }
+  </ul>
+
+  <h2>Sources</h2>
+  <ul>
+    {
+      data.sources.map((s) => (
+        <li>
+          <a href={s.url} target="_blank" rel="noopener noreferrer">
+            {s.title}
+          </a>
+          {s.note ? <span> — {s.note}</span> : null}
+        </li>
+      ))
+    }
+  </ul>
+
+  <nav class="chapter-nav">
+    {
+      prev ? (
+        <a href={`/modules/${prev.data.code}/`} class="prev">
+          <span class="direction">← Previous</span>
+          {prev.data.code} — {prev.data.title}
+        </a>
+      ) : (
+        <a href="/" class="prev">
+          <span class="direction">← Back</span>
+          Course Overview
+        </a>
+      )
+    }
+    {
+      next ? (
+        <a href={`/modules/${next.data.code}/`} class="next">
+          <span class="direction">Next →</span>
+          {next.data.code} — {next.data.title}
+        </a>
+      ) : (
+        <a href="/" class="next">
+          <span class="direction">Done →</span>
+          Course Overview
+        </a>
+      )
+    }
+  </nav>
+
+  <Fragment slot="footer">
+    <span>
+      {data.code}/{data.title}
+    </span>
+  </Fragment>
+</CourseShell>

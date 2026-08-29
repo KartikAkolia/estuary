@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  // Static Astro build, no server-rendered routes — matches the Loopwire
+  // (personal-website) precedent: Workers + static assets, not Pages.
+  // No "main" field: purely static, no Worker script needed on top.
+  "name": "estuary",
+  "compatibility_date": "2026-08-29",
+  "assets": {
+    "directory": "./dist"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
