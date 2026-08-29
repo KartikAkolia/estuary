@@ -130,7 +130,7 @@ Verified live, not assumed:
 
 ## Phase 5: Polish and the deployment decision
 
-Status: not started
+Status: deployment complete (2026-08-29); accessibility/visual polish not started
 
 ### Objective
 
@@ -138,12 +138,18 @@ Accessibility/visual polish once the reading content is live and used for a whil
 
 ### Outcomes
 
-TBD — depends on what Phase 4 usage surfaces and Kartik's deployment call.
+Kartik authorized public deployment, confirmed the subdomain (`estuary.kartikpassbolt.org`), and asked for Estuary to be its own repo rather than living in this monorepo. Repo split to `KartikAkolia/estuary` (made public 2026-08-29 at Kartik's request), deploy config built/validated, and Kartik connected it to Cloudflare Workers Builds and ran the first deploy himself. Auto-deploy on push to `main` is live, matching Loopwire's setup. Accessibility polish is still TBD, unrequested so far.
 
 ### Exit Criteria
 
-TBD.
+Site live at `estuary.kartikpassbolt.org` via Cloudflare Workers; `wrangler deploy` (or Workers Builds git auto-deploy) succeeds from `KartikAkolia/estuary`.
 
 ### Completion Evidence
 
-TBD.
+Kartik's own Workers Builds log confirmed a clean git-integrated build and deploy (clone → `npm clean-install` → `astro build`, 8 pages → Wrangler deploy, 0 errors), landing at `https://estuary.neerajakolia006.workers.dev`.
+
+Verified live, not assumed, directly via `curl`:
+
+- `https://estuary.kartikpassbolt.org/` → `200`, title confirmed as "Course Overview — Estuary" (custom domain already attached and serving real content, not a placeholder).
+- `https://estuary.kartikpassbolt.org/modules/COMP-1812/` → `200`.
+- `https://estuary.neerajakolia006.workers.dev/` and its `/modules/COMP-1812/` and a sampled diagram (`/diagrams/comp-1812-paradigms-tree.svg`) → all `200`.
